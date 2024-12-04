@@ -2,13 +2,12 @@ import copy
 import math
 import random
 from collections import defaultdict
-import random
 
 def part1(test=False):
     if test:
         fn = 'input01-t.txt'
     else:
-        fn = 'input01-1.txt'
+        fn = 'input01.txt'
     file1 = open(fn, 'r+')
     arrt = file1.readlines()
     arr1 = []
@@ -29,7 +28,7 @@ def part2(test=False):
     if test:
         fn = 'input01-t.txt'
     else:
-        fn = 'input01-1.txt'
+        fn = 'input01.txt'
     file1 = open(fn, 'r+')
     arrt = file1.readlines()
     arr1 = []
