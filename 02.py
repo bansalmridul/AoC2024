@@ -3,6 +3,7 @@ import math
 import random
 from collections import defaultdict
 
+
 def isValid(vals=[]):
     curr = vals[0]
     valid = True
@@ -15,17 +16,18 @@ def isValid(vals=[]):
         curr = next
     return True
 
+
 def part1(test=False):
     if test:
-        fn = f'input{__file__[2:-3]}-t.txt'
+        fn = f"input{__file__[2:-3]}-t.txt"
     else:
-        fn = f'input{__file__[2:-3]}.txt'
-    file1 = open(fn, 'r+')
+        fn = f"input{__file__[2:-3]}.txt"
+    file1 = open(fn, "r+")
     arrt = file1.readlines()
     ret = 0
     for line in arrt:
         line = line.strip()
-        vals = [int(x) for x in list(filter(bool, line.split(' ')))]
+        vals = [int(x) for x in list(filter(bool, line.split(" ")))]
         if isValid(vals):
             ret += 1
 
@@ -34,15 +36,15 @@ def part1(test=False):
 
 def part2(test=False):
     if test:
-        fn = f'input{__file__[2:-3]}-t.txt'
+        fn = f"input{__file__[2:-3]}-t.txt"
     else:
-        fn = f'input{__file__[2:-3]}.txt'
-    file1 = open(fn, 'r+')
+        fn = f"input{__file__[2:-3]}.txt"
+    file1 = open(fn, "r+")
     arrt = file1.readlines()
     ret = 0
     for line in arrt:
         line = line.strip()
-        vals = [int(x) for x in list(filter(bool, line.split(' ')))]
+        vals = [int(x) for x in list(filter(bool, line.split(" ")))]
         if isValid(vals):
             ret += 1
             continue
@@ -54,7 +56,7 @@ def part2(test=False):
             vals.insert(i, val)
     print(ret)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     part1()
     part2()
-
