@@ -44,7 +44,6 @@ def part2(test=False):
             start, end = match.span()
             do_val = bisect.bisect(do_inds, start)
             dont_val = bisect.bisect(dont_inds, start)
-            print(start, do_val, dont_val)
             if dont_val == 0 or do_inds[do_val - 1] > dont_inds[dont_val - 1]:
                 num1, num2 = map(int, re.search(r"mul\((\d+),(\d+)\)", line[start:end]).groups())
                 ret += num1*num2            
