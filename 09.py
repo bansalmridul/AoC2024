@@ -88,6 +88,17 @@ def checksum2(disk_file):
         ret += key * value.length * (value.index + (value.index + value.length - 1)) // 2
     return ret
 
+def get_ds_opt(disk_space):
+    max_len = len(disk_space) - 1
+    min_val = disk_space[-1][0]
+    min_val_pos = max_len #length where earliest position occurs
+    disk_space_opt = deque()
+    for x in range(max_len, -1, -1):
+        if disk_space[x] and disk_space[x][0] < min_val:
+            min_val = disk_space[x][0]
+            min_val_pos = x
+        disk_space_opt.appendleft((min_val, min_val_pos)) #index, length
+    return disk_space_opt
 
 def part2(test=False):
     fn = os.path.basename(__file__)
@@ -99,12 +110,11 @@ def part2(test=False):
     line = file1.readlines()[0].strip()
 
     disk_file = defaultdict(Triple) #set of all disks
-    disk_space = [] #index maps to minHeap of all spaces with length index
     v = 0
     ind = 0
     b = True
     disk_space = deque()
-    [disk_space.append([]) for _ in range(10)]
+    [disk_space.append([]) for _ in range(10)] #index maps to minHeap of all spaces with length index
     for c in line:
         if b:
             disk_file[v] = Triple(int(c), ind)
@@ -116,39 +126,33 @@ def part2(test=False):
     
     while not disk_space[-1]:
         disk_space.pop()
-    max_len = len(disk_space) - 1
-    min_val = disk_space[-1][0]
-    min_val_pos = max_len #length where earliest position occurs
-    disk_space_opt = deque()
-    for x in range(max_len + 1):
-        if disk_space[max_len - x] and min_val > disk_space[max_len - x][0]:
-                min_val = disk_space[max_len - x][0]
-                min_val_pos = max_len - x
-        disk_space_opt.appendleft((min_val, min_val_pos)) #index, length
-    #print(disk_space)
+    disk_space_opt = get_ds_opt(disk_space)
+    
     #print(disk_file)
+    #print(disk_space)
     #print(disk_space_opt)
+    
     for v in range(len(disk_file) - 1, -1 , -1):
         t = disk_file[v]
-        if t.length >= len(disk_space_opt):
+        if t.length >= len(disk_space_opt): #check if any space is long enough to contain file
             continue
-        block = disk_space_opt[t.length]
-        rem_length = block[1] - t.length
-        t.index = block[0]
-        heappop(disk_space[block[1]]) 
-        heappush(disk_space[rem_length], block[0] + t.length)
+        block = disk_space_opt[t.length] #get index of earliest space that fits file, and the length of that space
+        if t.index < block[0]:
+            continue
+        rem_length = block[1] - t.length #remaining length after file moves into the space
+        t.index = block[0] #set the index of the file to the index of the space
+        heappop(disk_space[block[1]]) #space no longer has the length, as the file has moved in
+        heappush(disk_space[rem_length], block[0] + t.length) #space now has length of rem_length, at index=old_index + length of file
         
-        while not disk_space[-1]:
-            disk_space.pop()
-            disk_space_opt.pop()
+        while not disk_space[-1]: #if no spaces of given length
+            disk_space.pop() #remove that length from disk space
+        
         max_len = len(disk_space) - 1
         min_val = disk_space[-1][0]
-        min_val_pos = max_len
-        for x in range(max_len, -1, -1):
-            if disk_space[x] and disk_space[x][0] < min_val:
-                min_val = disk_space[x][0]
-                min_val_pos = x
-            disk_space_opt[x] = (min_val, min_val_pos) #index, length
+        min_val_pos = max_len #length where earliest position occurs
+        disk_space_opt = deque()
+        disk_space_opt = get_ds_opt(disk_space)
+        
         #print(v)
         #print(disk_file)
         #print(disk_space)
@@ -157,4 +161,4 @@ def part2(test=False):
 
 if __name__ == "__main__":
     # part1()
-    part2(True)
+    part2()
