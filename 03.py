@@ -56,9 +56,7 @@ def part2(test=False):
             else:
                 b = do_inds[do_val - 1] > dont_inds[dont_val - 1]
             if b:
-                num1, num2 = map(
-                    int, re.search(r"mul\((\d+),(\d+)\)", line[start:end]).groups()
-                )
+                num1, num2 = map(int, re.search(r"mul\((\d+),(\d+)\)", line[start:end]).groups())
                 ret += num1 * num2
             # b = False
     print(ret)
