@@ -138,7 +138,7 @@ def part2(test=False):
         if t.length >= len(disk_space_opt):  # check if any space is long enough to contain file
             continue
         block = disk_space_opt[t.length]  # get index of earliest space that fits file, and the length of that space
-        if t.index < block[0]:
+        if t.index < block[0]: #only continue if index of space is before file
             continue
         rem_length = block[1] - t.length  # remaining length after file moves into the space
         t.index = block[0]  # set the index of the file to the index of the space
