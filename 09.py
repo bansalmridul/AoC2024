@@ -1,7 +1,7 @@
 import math
 import os
 from collections import defaultdict, deque
-import itertools
+from heapq import heapify, heappush, heappop
 
 
 class Pair:
@@ -14,8 +14,7 @@ class Pair:
 
     def __repr__(self) -> str:
         return f"({self.length}, {self.value})"
-
-
+        
 def checksum(disk_final):
     ind = 0
     ret = 0
@@ -72,6 +71,23 @@ def part1(test=False):
 
     print(checksum(disk_final))
 
+class Triple:
+    def __init__(self, l, i):
+        self.length = l
+        self.index = i
+
+    def __str__(self) -> str:
+        return f"({self.length},{self.index})"
+
+    def __repr__(self) -> str:
+        return f"({self.length}, {self.index})"
+
+def checksum2(disk_file):
+    ret = 0
+    for key, value in disk_file.items():
+        ret += key * value.length * (value.index + (value.index + value.length - 1)) // 2
+    return ret
+
 
 def part2(test=False):
     fn = os.path.basename(__file__)
@@ -82,45 +98,63 @@ def part2(test=False):
     file1 = open(fn, "r+")
     line = file1.readlines()[0].strip()
 
-    disk = deque()
-    disk_final = deque()
+    disk_file = defaultdict(Triple) #set of all disks
+    disk_space = [] #index maps to minHeap of all spaces with length index
+    v = 0
     ind = 0
     b = True
+    disk_space = deque()
+    [disk_space.append([]) for _ in range(10)]
     for c in line:
         if b:
-            disk.append(Pair(int(c), ind))
-            ind += 1
+            disk_file[v] = Triple(int(c), ind)
+            v += 1
         else:
-            disk.append(Pair(int(c), -1))
+            heappush(disk_space[int(c)], ind)
+        ind += int(c)
         b = not b
-    ind = len(disk) - 1
-    while True:
-        while ind >= 0 and disk[ind].value == -1:
-            ind -= 1
-        if ind < 0:
-            break
-        p = disk[ind]
-        j = 0
-        pc = disk[j]
-        print(ind, p)
-        while j < ind and not (pc.value == -1 and pc.length >= p.length):
-            j += 1
-            pc = disk[j]
-        if j == ind:
-            ind -= 1
+    
+    while not disk_space[-1]:
+        disk_space.pop()
+    max_len = len(disk_space) - 1
+    min_val = disk_space[-1][0]
+    min_val_pos = max_len #length where earliest position occurs
+    disk_space_opt = deque()
+    for x in range(max_len + 1):
+        if disk_space[max_len - x] and min_val > disk_space[max_len - x][0]:
+                min_val = disk_space[max_len - x][0]
+                min_val_pos = max_len - x
+        disk_space_opt.appendleft((min_val, min_val_pos)) #index, length
+    #print(disk_space)
+    #print(disk_file)
+    #print(disk_space_opt)
+    for v in range(len(disk_file) - 1, -1 , -1):
+        t = disk_file[v]
+        if t.length >= len(disk_space_opt):
             continue
-        if pc.length == p.length:
-            pc.value = p.value
-        else:
-            np = Pair(pc.length - p.length, -1)
-            pc.length, pc.value = p.length, p.value
-            disk.insert(j + 1, np)
-        p.value = -1
-        # print(disk)
-
-    print(checksum(disk))
-
+        block = disk_space_opt[t.length]
+        rem_length = block[1] - t.length
+        t.index = block[0]
+        heappop(disk_space[block[1]]) 
+        heappush(disk_space[rem_length], block[0] + t.length)
+        
+        while not disk_space[-1]:
+            disk_space.pop()
+            disk_space_opt.pop()
+        max_len = len(disk_space) - 1
+        min_val = disk_space[-1][0]
+        min_val_pos = max_len
+        for x in range(max_len, -1, -1):
+            if disk_space[x] and disk_space[x][0] < min_val:
+                min_val = disk_space[x][0]
+                min_val_pos = x
+            disk_space_opt[x] = (min_val, min_val_pos) #index, length
+        #print(v)
+        #print(disk_file)
+        #print(disk_space)
+        #print(disk_space_opt)
+    print(checksum2(disk_file))
 
 if __name__ == "__main__":
     # part1()
-    part2()
+    part2(True)
