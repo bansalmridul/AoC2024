@@ -1,12 +1,7 @@
 import os
-import math
 from collections import defaultdict
-import numpy as np
-from pprint import pprint
-import itertools
 
-dir_map = {"U": (-1, 0), "D": (1, 0), "R": (0, 1), "L": (0, -1)}
-dir_arr = ["U", "R", "D", "L"]
+dir_map = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
 
 def part1(test=False):
@@ -29,10 +24,10 @@ def part1(test=False):
 
 def traverse(map, x, y):
     dir = 0
-    visited = defaultdict(set)
+    visited = [set() for _ in range(4)]
     while True:
-        xn = x + dir_map[dir_arr[dir]][0]
-        yn = y + dir_map[dir_arr[dir]][1]
+        xn = x + dir_map[dir][0]
+        yn = y + dir_map[dir][1]
         if (x, y) in visited[dir]:
             return 1
         visited[dir].add((x, y))
@@ -46,12 +41,13 @@ def traverse(map, x, y):
             x, y = xn, yn
     return 0
 
+
 def get_spots(map, x, y):
     dir = 0
     visited = set()
     while True:
-        xn = x + dir_map[dir_arr[dir]][0]
-        yn = y + dir_map[dir_arr[dir]][1]
+        xn = x + dir_map[dir][0]
+        yn = y + dir_map[dir][1]
         if xn < 0 or xn >= len(map):
             break
         if yn < 0 or yn >= len(map[0]):
@@ -63,7 +59,8 @@ def get_spots(map, x, y):
             visited.add((x, y))
     return visited
 
-def part2(test=False):
+
+def part1and2(test=False):
     fn = os.path.basename(__file__)
     if test:
         fn = f"input{fn[:-3]}-t.txt"
@@ -81,6 +78,7 @@ def part2(test=False):
         map.append(list(line))
     map[sx][sy] = "."
     set_pos = get_spots(map, sx, sy)
+    print(len(set_pos) + 1)
     ret = 0
     for i, j in set_pos:
         map[i][j] = "#"
@@ -90,5 +88,5 @@ def part2(test=False):
 
 
 if __name__ == "__main__":
-    part1()
-    part2()
+    # part1()
+    part1and2()
