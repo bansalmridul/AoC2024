@@ -19,46 +19,23 @@ def part1(test=False):
     arrt = file1.readlines()
 
     map = []
-    x = -1
-    y = -1
-    dir = 0
     for i, line in enumerate(arrt):
         line = line.strip()
         if "^" in line:
-            x = i
-            y = line.index("^")
+            x, y = i, line.index("^")
         map.append(list(line))
-    map[x][y] = "."
-
-    ret = 0
-    while True:
-        xn = x + dir_map[dir_arr[dir]][0]
-        yn = y + dir_map[dir_arr[dir]][1]
-        if map[x][y] == ".":
-            map[x][y] = "X"
-            ret += 1
-        if xn < 0 or xn >= len(map):
-            break
-        if yn < 0 or yn >= len(map[0]):
-            break
-        if map[xn][yn] == "#":
-            map[x][y] = "+"
-            dir = (dir + 1) % 4
-        else:
-            x = xn
-            y = yn
-    print(ret)
+    print(len(get_spots(map, x, y)) + 1)
 
 
 def traverse(map, x, y):
     dir = 0
-    visited = defaultdict(list)
+    visited = defaultdict(set)
     while True:
         xn = x + dir_map[dir_arr[dir]][0]
         yn = y + dir_map[dir_arr[dir]][1]
         if (x, y) in visited[dir]:
             return 1
-        visited[dir].append((x, y))
+        visited[dir].add((x, y))
         if xn < 0 or xn >= len(map):
             break
         if yn < 0 or yn >= len(map[0]):
@@ -66,10 +43,25 @@ def traverse(map, x, y):
         if map[xn][yn] == "#":
             dir = (dir + 1) % 4
         else:
-            x = xn
-            y = yn
+            x, y = xn, yn
     return 0
 
+def get_spots(map, x, y):
+    dir = 0
+    visited = set()
+    while True:
+        xn = x + dir_map[dir_arr[dir]][0]
+        yn = y + dir_map[dir_arr[dir]][1]
+        if xn < 0 or xn >= len(map):
+            break
+        if yn < 0 or yn >= len(map[0]):
+            break
+        if map[xn][yn] == "#":
+            dir = (dir + 1) % 4
+        else:
+            x, y = xn, yn
+            visited.add((x, y))
+    return visited
 
 def part2(test=False):
     fn = os.path.basename(__file__)
@@ -81,9 +73,6 @@ def part2(test=False):
     arrt = file1.readlines()
 
     map = []
-    x = -1
-    y = -1
-    dir = 0
     for i, line in enumerate(arrt):
         line = line.strip()
         if "^" in line:
@@ -91,17 +80,12 @@ def part2(test=False):
             sy = line.index("^")
         map.append(list(line))
     map[sx][sy] = "."
-
+    set_pos = get_spots(map, sx, sy)
     ret = 0
-    for i in range(len(map)):
-        for j in range(len(map[i])):
-            if map[i][j] == "#" or (i == sx and j == sy):
-                continue
-            print(i, j)
-            map[i][j] = "#"
-            ret += traverse(map, sx, sy)
-            map[i][j] = "."
-
+    for i, j in set_pos:
+        map[i][j] = "#"
+        ret += traverse(map, sx, sy)
+        map[i][j] = "."
     print(ret)
 
 
