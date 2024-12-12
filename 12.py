@@ -1,109 +1,54 @@
 import os
-from collections import defaultdict
 import numpy as np
 import itertools
-from pprint import pprint
 
 
-class Region:
-    def __init__(self):
-        self.points = set()
-        self.area = 0
-        self.x_min = 200
-        self.x_max = -1
-        self.y_min = 200
-        self.y_max = -1
+def perimeter(points):
+    perimeter = 0
+    for point, diff in itertools.product(points, [(0, 1), (1, 0), (0, -1), (-1, 0)]):
+        n_point = (point[0] + diff[0], point[1] + diff[1])
+        if n_point not in points:
+            perimeter += 1
+    return perimeter
 
-    def update(self, row, col):
-        self.area += 1
-        self.points.add((row, col))
-        self.x_min = min(self.x_min, row)
-        self.x_max = max(self.x_max, row)
-        self.y_min = min(self.y_min, col)
-        self.y_max = max(self.y_max, col)
-
-    def __repr__(self):
-        # perimeter = 2 * (self.x_max - self.x_min + 1) + 2 * (self.y_max - self.y_min + 1)
-        return f"Area: {self.area}, Perimeter: {self.perimeter()}"
-        # return (f"Area: {self.area}, {self.x_max} - {self.x_min}, {self.y_max} - {self.y_min}")
-
-    def perimeter(self):
-        perimeter = 0
-        for point, diff in itertools.product(self.points, [(0, 1), (1, 0), (0, -1), (-1, 0)]):
-            n_point = (point[0] + diff[0], point[1] + diff[1])
-            if n_point not in self.points:
-                perimeter += 1
-        return perimeter
-
-    def sides(self):
-        sides = 0
-        u_sides_visited = set()
-        d_sides_visited = set()
-        l_sides_visited = set()
-        r_sides_visited = set()
-
-        for point in self.points:
-            n_point = (point[0] + 1, point[1])
-            if n_point not in self.points:  # check if a bottom edge
-                left = (point[0], point[1] - 1) not in d_sides_visited
-                right = (point[0], point[1] + 1) not in d_sides_visited
-                d_sides_visited.add(point)
-                if left and right:
-                    sides += 1
-                elif not left and not right:
-                    sides -= 1
-            n_point = (point[0] - 1, point[1])
-            if n_point not in self.points:  # check if a upper edge
-                left = (point[0], point[1] - 1) not in u_sides_visited
-                right = (point[0], point[1] + 1) not in u_sides_visited
-                u_sides_visited.add(point)
-                if left and right:
-                    sides += 1
-                elif not left and not right:
-                    sides -= 1
-            n_point = (point[0], point[1] + 1)
-            if n_point not in self.points:  # check if a right edge
-                upper = (point[0] - 1, point[1]) not in r_sides_visited
-                lower = (point[0] + 1, point[1]) not in r_sides_visited
-                r_sides_visited.add(point)
-                if upper and lower:
-                    sides += 1
-                elif not upper and not lower:
-                    sides -= 1
-            n_point = (point[0], point[1] - 1)
-            if n_point not in self.points:  # check if a left edge
-                upper = (point[0] - 1, point[1]) not in l_sides_visited
-                lower = (point[0] + 1, point[1]) not in l_sides_visited
-                l_sides_visited.add(point)
-                if upper and lower:
-                    sides += 1
-                elif not upper and not lower:
-                    sides -= 1
-        return sides
+def sides(points):
+    sides = 0
+    visited = [set() for _ in range(4)]
+    dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+    for point, i in itertools.product(points, range(4)):
+        n_point = (point[0] + dirs[i][0], point[1] + dirs[i][1]) #move one in a cardinal direction
+        side_visited = visited[i]
+        if n_point not in points:  # check if adjacent point is in
+            #check if opposing vertices have been added to corresponding "side"
+            opp1 = (point[0] - ((i + 1) % 2), point[1] - (i % 2)) not in side_visited
+            opp2 = (point[0] + ((i + 1) % 2), point[1] + (i % 2)) not in side_visited
+            side_visited.add(point)
+            sides += -1 + (opp1 + opp2)
+    return sides
 
 
 def getRegions(grid):
     rows, cols = len(grid), len(grid[0])
     visited = np.zeros((rows, cols), dtype=bool)
-    retDict = defaultdict(Region)
+    retDict = dict()
     idx = 1
 
-    def dfs(row, col, char, visited, reg):
+    def dfs(row, col, char, visited, points):
         if not visited[row][col] and grid[row][col] == char:
             visited[row][col] = True
-            reg.update(row, col)
+            points.add((row, col))
             for dr, dc in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
                 nr, nc = row + dr, col + dc
                 if 0 <= nr < rows and 0 <= nc < cols:
-                    dfs(nr, nc, char, visited, reg)
+                    dfs(nr, nc, char, visited, points)
 
     for row, col in np.ndindex(grid.shape):
         char = grid[row][col]
         if not visited[row][col]:
             idx += 1
-            r = Region()
-            dfs(row, col, char, visited, r)
-            retDict[idx] = r
+            points = set()
+            dfs(row, col, char, visited, points)
+            retDict[idx] = points
 
     return retDict
 
@@ -122,10 +67,9 @@ def part1and2(test=False):
     ret1 = 0
     ret2 = 0
     reges = getRegions(grid)
-    # pprint(reges)
     for _, region in reges.items():
-        ret1 += region.area * region.perimeter()
-        ret2 += region.area * region.sides()
+        ret1 += len(region) * perimeter(region)
+        ret2 += len(region) * sides(region)
     print(ret1)
     print(ret2)
 
