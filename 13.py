@@ -10,6 +10,7 @@ def extract_numbers(string):
 def minCost(Ax, Ay, Bx, By, Px, Py):
     coeff_det = Ax*By - Bx * Ay
     if coeff_det == 0 and px % gcd(ax, bx) != 0:
+        print("oogly boogly")
         return 0
     m_det = Px*By - Bx * Py
     n_det = Ax*Py - Px * Ay
