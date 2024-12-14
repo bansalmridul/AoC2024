@@ -11,15 +11,16 @@ def perimeter(points):
             perimeter += 1
     return perimeter
 
+
 def sides(points):
     sides = 0
     visited = [set() for _ in range(4)]
     dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     for point, i in itertools.product(points, range(4)):
-        n_point = (point[0] + dirs[i][0], point[1] + dirs[i][1]) #move one in a cardinal direction
+        n_point = (point[0] + dirs[i][0], point[1] + dirs[i][1])  # move one in a cardinal direction
         side_visited = visited[i]
         if n_point not in points:  # check if adjacent point is in
-            #check if opposing vertices have been added to corresponding "side"
+            # check if opposing vertices have been added to corresponding "side"
             opp1 = (point[0] - ((i + 1) % 2), point[1] - (i % 2)) not in side_visited
             opp2 = (point[0] + ((i + 1) % 2), point[1] + (i % 2)) not in side_visited
             side_visited.add(point)
