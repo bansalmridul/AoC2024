@@ -7,7 +7,6 @@ dir_list = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 def dijkstra(grid):
     minScores = len(grid) ** 2 * np.ones((len(grid), len(grid)), dtype=int)
     x, y = 0, 0
-    visited = set()
     up_next = [(0, x, y)]
     minScores[x][y] = 0
     heapify(up_next)
