@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import itertools
-
+import time
 dir_list = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
 def dfs(grid, s_val):
@@ -78,7 +78,8 @@ def part1and2(test=False):
     print(saves_threshold_extra(grid, t2))
 
     
-
      
 if __name__ == "__main__":
+    t = time.perf_counter()
     part1and2()
+    print(f"Time: {time.perf_counter() - t}")
