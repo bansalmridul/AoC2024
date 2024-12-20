@@ -1,8 +1,5 @@
-import os
+import os, time
 import numpy as np
-import time
-import cv2
-from skimage.metrics import structural_similarity
 
 
 def extract_pos(line, time=100):
@@ -79,7 +76,7 @@ def part2(test=False):
     while True:
         print_array_as_dots(np.transpose(arr))
         print(count)
-        time.sleep(1)
+        time.sleep(0.5)
         for i in range(len(point_list)):
             x, y = point_list[i][0], point_list[i][1]
             vx, vy = point_list[i][2], point_list[i][3]
@@ -90,6 +87,13 @@ def part2(test=False):
         count += 1
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1()
+    t1 = time.perf_counter()
+    print(f"Time 1: {t1 - t}")
     part2()
+
+
+if __name__ == "__main__":
+    main()

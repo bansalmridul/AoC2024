@@ -1,7 +1,6 @@
-import numpy as np
-import math
+import os, time
 import re
-from collections import defaultdict
+import numpy as np
 
 
 def check_horizontal1(arr):
@@ -71,17 +70,18 @@ def check_all(arr):
 
 
 def part1(test=False):
+    fn = os.path.basename(__file__)
     if test:
-        fn = f"input{__file__[:-3]}-t.txt"
+        fn = f"input{fn[:-3]}-t.txt"
         d = 10
     else:
-        fn = f"input{__file__[:-3]}.txt"
+        fn = f"input{fn[:-3]}.txt"
         d = 140
+
     file1 = open(fn, "r+")
     arrt = file1.readlines()
     ret = 0
-    arr = np.chararray((1, d))
-    arr[:] = "a"
+    arr = np.full((1, d), "a", dtype=str)
     for line in arrt:
         line = line.strip()
         arr = np.vstack((arr, list(line)))
@@ -108,17 +108,17 @@ def check_diagonal(arr, i, j):
 
 
 def part2(test=False):
+    fn = os.path.basename(__file__)
     if test:
-        fn = f"input{__file__[:-3]}-t.txt"
+        fn = f"input{fn[:-3]}-t.txt"
         d = 10
     else:
-        fn = f"input{__file__[:-3]}.txt"
+        fn = f"input{fn[:-3]}.txt"
         d = 140
     file1 = open(fn, "r+")
     arrt = file1.readlines()
     ret = 0
-    arr = np.chararray((1, d))
-    arr[:] = "a"
+    arr = np.full((1, d), "a", dtype=str)
     for line in arrt:
         line = line.strip()
         arr = np.vstack((arr, list(line)))
@@ -129,6 +129,15 @@ def part2(test=False):
     print(ret)
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1()
+    t1 = time.perf_counter()
+    print(f"Time 1: {t1 - t}")
     part2()
+    t2 = time.perf_counter()
+    print(f"Time 2: {t2 - t1}")
+
+
+if __name__ == "__main__":
+    main()

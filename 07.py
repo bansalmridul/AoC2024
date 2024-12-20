@@ -1,5 +1,4 @@
-import math
-import os
+import os, time
 
 
 def compare(target, vals=[]):
@@ -72,6 +71,15 @@ def part2(test=False):
     print(ret)
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1()
+    t1 = time.perf_counter()
+    print(f"Time 1: {t1 - t}")
     part2()
+    t2 = time.perf_counter()
+    print(f"Time 2: {t2 - t1}")
+
+
+if __name__ == "__main__":
+    main()

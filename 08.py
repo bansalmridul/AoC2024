@@ -1,5 +1,5 @@
+import os, time
 import math
-import os
 from collections import defaultdict
 import itertools
 
@@ -66,6 +66,15 @@ def part2(test=False):
     print(len(ret))
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1()
+    t1 = time.perf_counter()
+    print(f"Time 1: {t1 - t}")
     part2()
+    t2 = time.perf_counter()
+    print(f"Time 2: {t2 - t1}")
+
+
+if __name__ == "__main__":
+    main()

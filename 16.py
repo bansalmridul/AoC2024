@@ -1,7 +1,5 @@
-import os
+import os, time
 import numpy as np
-import time
-from copy import deepcopy
 
 dir_map = [(0, 1), (-1, 0), (0, -1), (1, 0)]
 turn = 1000
@@ -76,5 +74,11 @@ def part1and2(test=False):
     print(len(opt_points))
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1and2()
+    print(f"Time: {time.perf_counter() - t}")
+
+
+if __name__ == "__main__":
+    main()

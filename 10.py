@@ -1,6 +1,5 @@
-import math
-import os
-from collections import defaultdict, deque
+import os, time
+from collections import defaultdict
 import itertools
 import numpy as np
 
@@ -62,6 +61,15 @@ def part2(test=False):
     print(ret_c)
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1()
+    t1 = time.perf_counter()
+    print(f"Time 1: {t1 - t}")
     part2()
+    t2 = time.perf_counter()
+    print(f"Time 2: {t2 - t1}")
+
+
+if __name__ == "__main__":
+    main()

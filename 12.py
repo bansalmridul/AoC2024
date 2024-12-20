@@ -1,4 +1,4 @@
-import os
+import os, time
 import numpy as np
 import itertools
 
@@ -75,5 +75,11 @@ def part1and2(test=False):
     print(ret2)
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1and2()
+    print(f"Time: {time.perf_counter() - t}")
+
+
+if __name__ == "__main__":
+    main()

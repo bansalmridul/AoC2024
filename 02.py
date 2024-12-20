@@ -1,7 +1,4 @@
-import copy
-import math
-import random
-from collections import defaultdict
+import os, time
 
 
 def isValid(vals=[]):
@@ -18,10 +15,11 @@ def isValid(vals=[]):
 
 
 def part1(test=False):
+    fn = os.path.basename(__file__)
     if test:
-        fn = f"input{__file__[2:-3]}-t.txt"
+        fn = f"input{fn[:-3]}-t.txt"
     else:
-        fn = f"input{__file__[2:-3]}.txt"
+        fn = f"input{fn[:-3]}.txt"
     file1 = open(fn, "r+")
     arrt = file1.readlines()
     ret = 0
@@ -35,10 +33,11 @@ def part1(test=False):
 
 
 def part2(test=False):
+    fn = os.path.basename(__file__)
     if test:
-        fn = f"input{__file__[2:-3]}-t.txt"
+        fn = f"input{fn[:-3]}-t.txt"
     else:
-        fn = f"input{__file__[2:-3]}.txt"
+        fn = f"input{fn[:-3]}.txt"
     file1 = open(fn, "r+")
     arrt = file1.readlines()
     ret = 0
@@ -57,6 +56,15 @@ def part2(test=False):
     print(ret)
 
 
-if __name__ == "__main__":
+def main():
+    t = time.perf_counter()
     part1()
+    t1 = time.perf_counter()
+    print(f"Time 1: {t1 - t}")
     part2()
+    t2 = time.perf_counter()
+    print(f"Time 2: {t2 - t1}")
+
+
+if __name__ == "__main__":
+    main()
